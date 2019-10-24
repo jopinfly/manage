@@ -36,10 +36,31 @@
         </Form>
         <div class="uplogo">
             <div class="title">产品logo</div>
-            
+            <Upload action="~~"
+                    :show-upload-list="false"
+                    :format="['jpg','jpeg','png']"
+                    :max-size="2048"
+                    :before-upload="logoImgBeforeUpload"
+                    multiple
+                    :on-format-error="handleFormatError"
+                    :on-exceeded-size="handleMaxSize"
+                    style="margin-top: 15px">
+                <div style="width: 58px;height:58px;line-height: 58px;border: 1px dashed rgba(0, 0, 0, .2);
+    border-radius: 5px;
+    position: relative;
+}">
+                    <img :src="logoImg" alt="" v-if="logoImg" style="position: absolute;
+    z-index: 10;
+    width: 58px;
+    height: 58px;
+    left: 0;">
+                    <Icon type="ios-camera" size="20" :style='{opacity:logoImg?0.2:1}'></Icon>
+                </div>
+
+            </Upload>
         </div>
         <div class="uploadList">
-            <div class="title">产品介绍图片</div>
+            <div class="title" style="margin-bottom: 15px">产品介绍图片</div>
             <div class="demo-upload-list" v-for="item in uploadList">
                 <template v-if="item.status === 'finished'">
                     <img :src="item.url">
@@ -126,6 +147,7 @@
 				imgName: '',
 				visible: false,
 				uploadList: [],
+				logoImg: false
 			}
 		},
 		methods: {
@@ -155,7 +177,7 @@
 				this.$Notice.warning({
 					title: 'The file format is incorrect',
 					desc: 'File format of ' + file.name + ' is incorrect, please select jpg or png.'
-				});
+				})
 			},
 			handleMaxSize(file) {
 				this.$Notice.warning({
@@ -163,7 +185,7 @@
 					desc: 'File  ' + file.name + ' is too large, no more than 2M.'
 				});
 			},
-			handleBeforeUpload(file, a) {
+			handleBeforeUpload(file) {
 				let _this = this
 				let reader = new FileReader()
 				reader.readAsDataURL(file)
@@ -176,6 +198,16 @@
 						url: _file,
 					}
 					_this.$refs.upload.fileList.push(a)
+				}
+				return false;
+			},
+			logoImgBeforeUpload(file) {
+				let _this = this
+				let reader = new FileReader()
+				reader.readAsDataURL(file)
+				reader.onload = e => {
+					let _file = e.target.result
+					_this.logoImg = _file
 				}
 				return false;
 			}
@@ -235,7 +267,8 @@
         cursor: pointer;
         margin: 0 2px;
     }
-    .uplogo,.uploadList{
+
+    .uplogo, .uploadList {
         margin: auto;
         text-align: center;
         margin-top: 50px;
