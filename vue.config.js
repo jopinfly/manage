@@ -24,7 +24,6 @@ module.exports = {
 		proxy: {
 			// 全路径替换务必放到最后
 			'/api': {
-				//西安地址
 				target: 'http://47.244.115.107:8025/',
 				changeOrigin: true,
 				pathRewrite: {
